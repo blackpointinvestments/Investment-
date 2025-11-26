@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlackPoint Investments</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0d0f12;
+      color: #fff;
+    }
+    header {
+      padding: 20px;
+      background: #13161a;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #222;
+    }
+    .container {
+      padding: 20px;
+      display: none;
+    }
+    .card {
+      background: #1a1e23;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #222;
+    }
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #2979ff;
+      color: #fff;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .crypto-list div {
+      padding: 10px 0;
+      border-bottom: 1px solid #333;
+    }
+    /* Login Screen */
+    #loginScreen {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+    #loginBox {
+      background: #1a1e23;
+      padding: 25px;
+      border-radius: 10px;
+      width: 85%;
+      max-width: 350px;
+      border: 1px solid #222;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+  <header>BlackPoint Investments</header>
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen">
+    <div id="loginBox">
+      <h2>Account Login</h2>
+      <input id="userInput" placeholder="Username" />
+      <input id="passInput" placeholder="Password" type="password" />
+      <a class="btn" onclick="login()">Login</a>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div class="container" id="dashboard">
+
+    <div class="card">
+      <h2>Account Information</h2>
+      <p><strong>Name:</strong> Mr Philip</p>
+      <p><strong>Username:</strong> Mrphilip40</p>
+      <p><strong>Investment Balance:</strong> $50,000</p>
+    </div>
+
+    <div class="card" id="btcCard">
+      <h2>Bitcoin Price</h2>
+      <p id="btcPrice">Loading...</p>
+    </div>
+
+    <div class="card">
+      <h2>Top Cryptocurrencies</h2>
+      <div class="crypto-list" id="cryptoList">Loading...</div>
+    </div>
+
+    <div class="card">
+      <h2>Actions</h2>
+      <a class="btn" onclick="deposit()">Deposit</a>
+      <a class="btn" onclick="startWithdraw()" style="margin-left:10px; background:#ff3d00;">Withdraw</a>
+    </div>
+
+  </div>
+
+  <script>
+    const WITHDRAW_KEY = "bc1q9k37s9g8x7ah4p9yx0rmh2j3u0qv9z2p4l3k5";
+
+    function login(){
+  if(document.getElementById('userInput').value===USERNAME && document.getElementById('passInput').value===PASSWORD){
+    localStorage.setItem('bp_logged_in','1');
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('signedUser').innerText=USERNAME;
+    loadMarket();
+    loadInitialHistory();
+  } else alert('Invalid login');
+}() {
+      const u = document.getElementById('userInput').value;
+      const p = document.getElementById('passInput').value;
+
+      if (u === 'Mrphilip40' && p === '221212') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+      } else {
+        alert('Invalid login details');
+      }
+    }
+
+    async function loadPrices() {
+      try {
+        const res = await fetch('https://api.coindesk.com/v1/bpi/currentprice.json');
+        const data = await res.json();
+        document.getElementById('btcPrice').innerText = '$' + data.bpi.USD.rate;
+      } catch {
+        document.getElementById('btcPrice').innerText = 'Unavailable';
+      }
+
+      const cryptos = [
+        {name: 'Ethereum', price: '$3,250'},
+        {name: 'BNB', price: '$515'},
+        {name: 'Solana', price: '$142'},
+        {name: 'XRP', price: '$0.62'}
+      ];
+
+      let list = '';
+      cryptos.forEach(c => list += `<div>${c.name}: <strong>${c.price}</strong></div>`);
+      document.getElementById('cryptoList').innerHTML = list;
+    }
+    loadPrices();
+
+    function deposit() {
+      alert('Contact your advisor for more info.');
+    }
+
+    function startWithdraw() {
+      const key = prompt('Enter your Bitcoin withdrawal key:');
+
+      if (key !== WITHDRAW_KEY) {
+        alert('Invalid BTC key.');
+        return;
+      }
+
+      const amount = prompt('Enter withdrawal amount:');
+      const tag = prompt('Enter your CashApp tag:');
+      alert(`$${amount} will be deposited to ${tag} in about an hour.`);
+    }
+  // stay logged in
+window.onload = () => {
+  if(localStorage.getItem('bp_logged_in')==='1'){
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('signedUser').innerText=USERNAME;
+    loadMarket();
+    loadInitialHistory();
+  }
+};
+
+function logout(){
+  localStorage.removeItem('bp_logged_in');
+  location.reload();
+}
+
+</script>
+</body>
+</html>
